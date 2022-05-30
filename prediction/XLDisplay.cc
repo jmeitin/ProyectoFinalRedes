@@ -18,7 +18,7 @@ std::vector<int> XLDisplay::xl_colors;
 
 XFontStruct* XLDisplay::xl_font;
 
-const char * XLDisplay::font =  "*-helvetica-*-r-*-*-12-*";
+const char * XLDisplay::font =  "*-arabic-*-*-r-*-*-17-*-*-*-*-*-*-*";
 //const char * XLDisplay::font = "*-liberation sans-*-r-*-*-*-*";
 
 //------------------------------------------------------------------------------
