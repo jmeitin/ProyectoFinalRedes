@@ -10,11 +10,13 @@
 #include "SDLUtils.h"
 
 using namespace std;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
 void sdlutils_basic_demo() {
 
 	// Initialise the SDLGame singleton
-	SDLUtils::init("SDLGame Demo!", 800, 600,
+	SDLUtils::init("SDLGame Demo!", WIDTH, HEIGHT,
 			"resources/config/sdlutilsdemo.resources.json");
 
 	// reference to the SDLUtils Singleton. You could use it as a pointer as well,
@@ -34,7 +36,7 @@ void sdlutils_basic_demo() {
 
 	
 	// we can take textures from the predefined ones, and we can create a custom one as well
-	Player player(&sdl.images().at("sdl_logo"),10,10);
+	Player player(&sdl.images().at("sdl_logo"),10,10, 10, WIDTH, HEIGHT);
 
 	// start the music in a loop
 	sdl.musics().at("beat").play();
