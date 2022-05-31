@@ -16,7 +16,11 @@ public:
     void move(int x,int y);
     bool isDestroyable(){return destructible;};
     void setDestroyable(bool d){destructible = d;};
-    
+
+    float getW();
+    float getH();
+    float getRot();
+    Vector2D getPosition2();
 protected:
     Texture* texture;
     position pos;

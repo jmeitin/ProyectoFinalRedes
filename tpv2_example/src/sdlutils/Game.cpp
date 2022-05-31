@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "../utils/Collisions.h"
 
 Game::Game(){
 
@@ -51,6 +51,8 @@ void Game::update(){
 		player->update();
 		player2->update();
 
+		checkCollision();
+
 		//UPDATE----------------------------------------------------------
 		for (auto bullet =bullets.begin(); bullet != bullets.end(); bullet++){
         	(*bullet)->update();
@@ -86,9 +88,36 @@ void Game::update(){
 	//Music::haltMusic();
 }
 
-void Game::crearBala(pair<int,int> currentPos, bool jugadorIz, double rot){
+void Game::crearBala(pair<int,int> currentPos, bool jugadorA, double rot){
 
-    bullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot));
+    bullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot, jugadorA));
 	
 }
-    
+
+void Game::checkCollision(){
+	for (auto bullet =bullets.begin(); bullet != bullets.end(); bullet++){
+        Bala* b = (*bullet);
+		if(b->getCreator()){
+			if (Collisions::collidesWithRotation(
+			b->getPosition2(), b->getW(), b->getH(), b->getRot(),
+			player2->getPosition2(), player2->getW(), player2->getH(), player2->getRot())) {
+				deadBullets.push_back((*bullet));
+				exit_ = true;
+				std::cout<< "ganó jugador A";
+			}
+			
+		}
+		else{
+			if (Collisions::collidesWithRotation(
+			b->getPosition2(), b->getW(), b->getH(), b->getRot(),
+			player->getPosition2(), player->getW(), player->getH(), player->getRot())) {
+				deadBullets.push_back((*bullet));
+				exit_ = true;
+				std::cout<< "ganó jugador B";
+			}
+			
+		}
+			
+    }
+	
+}
