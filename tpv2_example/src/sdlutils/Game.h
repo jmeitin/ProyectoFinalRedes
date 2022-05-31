@@ -1,0 +1,33 @@
+#pragma once
+
+#include <SDL.h>
+
+#include "sdlutils_demo.h"
+#include "Player.h"
+#include "GameObject.h"
+#include "InputHandler.h"
+#include "macros.h"
+#include "SDLUtils.h"
+#include "Bala.h"
+
+using namespace std;
+const int WIDTH = 800;
+const int HEIGHT = 600;
+const int SPEED = 30;
+
+class Game{
+public:
+    Game();
+    void start();
+    void crearBala(pair<int,int> pos, bool jugador);
+
+private:
+    void update();
+
+protected:
+    SDLUtils* sdl = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    InputHandler* ih = nullptr;
+    Player* player = nullptr;
+    bool exit_ = false;
+};

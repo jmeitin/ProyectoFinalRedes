@@ -1,0 +1,81 @@
+#include "Game.h"
+
+Game::Game(){
+
+}
+
+void Game::Start(){
+    // Initialise the SDLGame singleton
+	SDLUtils::init("SDLGame Demo!", WIDTH, HEIGHT,
+			"resources/config/sdlutilsdemo.resources.json");
+
+    sdl = SDLUtils::instance();
+
+    //show the cursor
+	sdl->showCursor();
+
+	// store the 'renderer' in a local variable, just for convenience
+	renderer = sdl->renderer();
+	
+	// we can take textures from the predefined ones, and we can create a custom one as well
+	player = new Player(this, &sdl->images().at("sdl_logo"),10,10, 10, WIDTH, HEIGHT);
+
+	// start the music in a loop
+	sdl->musics().at("beat").play();
+
+	// reference to the input handler (we could use a pointer, I just . rather than ->).
+	// you can also use the inline method ih() that is defined in InputHandler.h
+	ih = InputHandler::instance();
+
+    update();
+}
+
+void Game::update(){
+    while (!exit_) {
+		Uint32 startTime = sdl->currRealTime();
+
+		// update the event handler
+		ih->refresh();
+			
+		// exit when any key is down
+		if (ih->keyDownEvent() )
+		{
+			if(ih->isKeyDown(SDLK_q))
+			exit_ = true;
+		}
+
+		// clear screen
+		sdl->clearRenderer();
+
+		player->update();
+		player->render();
+		// render Hello SDL
+		// helloSDL.render(x1, y1);
+		// if (x1 + helloSDL.width() > winWidth)
+		// 	helloSDL.render(x1 - winWidth, y1);
+		// x1 = (x1 + 5) % winWidth;
+
+		// render Press Any Key
+		//pressAnyKey.render(x0, y0);
+
+		// render the SDLogo
+		//sdlLogo.render(1, 1);
+
+		// present new frame
+		sdl->presentRenderer();
+
+		Uint32 frameTime = sdl->currRealTime() - startTime;
+
+		if (frameTime < 20)
+			SDL_Delay(20 - frameTime);
+	}
+
+	// stop the music
+	Music::haltMusic();
+}
+
+void Game::crearBala(pair<int,int> currentPos, bool jugadorIz){
+
+    Bala* b = new Bala(&sdl->images().at("sdl_logo"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT)
+}
+    
