@@ -21,7 +21,7 @@ class Game{
 public:
     Game();
     void start();
-    void crearBala(pair<int,int> pos, bool jugador);
+    void crearBala(pair<int,int> pos, bool jugador,double rot);
 
 private:
     void update();
@@ -31,6 +31,7 @@ protected:
     SDL_Renderer* renderer = nullptr;
     InputHandler* ih = nullptr;
     Player* player = nullptr;
+    Player* player2 = nullptr;
     bool exit_ = false;
     list<Bala*> bullets;
     list<Bala*> deadBullets;

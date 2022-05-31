@@ -8,7 +8,7 @@ class Game;
 
 class Player : public GameObject{
 public:
-    Player(Game*, Texture*, int x,int y, int s, int w, int h);
+    Player(Game*, Texture*, int x,int y, int s, int w, int h,bool j = false);
     void update();
 protected:
     InputHandler* ihs;

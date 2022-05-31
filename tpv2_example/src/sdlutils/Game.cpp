@@ -19,8 +19,8 @@ void Game::start(){
 	renderer = sdl->renderer();
 	
 	// we can take textures from the predefined ones, and we can create a custom one as well
-	player = new Player(this, &sdl->images().at("fighter"),10,10, 10, WIDTH, HEIGHT);
-
+	player = new Player(this, &sdl->images().at("fighter"),10,10, 10, WIDTH, HEIGHT,true);
+	player2 = new Player(this, &sdl->images().at("fighter"),WIDTH-150,HEIGHT/2, 10, WIDTH, HEIGHT);
 	// start the music in a loop
 	//sdl->musics().at("beat").play();
 
@@ -49,6 +49,7 @@ void Game::update(){
 		sdl->clearRenderer();
 
 		player->update();
+		player2->update();
 
 		//UPDATE----------------------------------------------------------
 		for (auto bullet =bullets.begin(); bullet != bullets.end(); bullet++){
@@ -65,10 +66,12 @@ void Game::update(){
        	 	delete deadBullets.back();
        		deadBullets.pop_back();
    		} 
+		//RENDER---------------------------------------------------
+		for(Bala* bullet : bullets) bullet->render();
 
 		player->render();
-		
-		for(Bala* bullet : bullets) bullet->render();
+
+		player2->render();
 		
 		// present new frame
 		sdl->presentRenderer();
@@ -83,9 +86,9 @@ void Game::update(){
 	//Music::haltMusic();
 }
 
-void Game::crearBala(pair<int,int> currentPos, bool jugadorIz){
+void Game::crearBala(pair<int,int> currentPos, bool jugadorIz, double rot){
 
-    bullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT));
+    bullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot));
 	
 }
     
