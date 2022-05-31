@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <SDL.h>
 
 #include "sdlutils_demo.h"
@@ -9,6 +10,7 @@
 #include "macros.h"
 #include "SDLUtils.h"
 #include "Bala.h"
+
 
 using namespace std;
 const int WIDTH = 800;
@@ -30,4 +32,6 @@ protected:
     InputHandler* ih = nullptr;
     Player* player = nullptr;
     bool exit_ = false;
+    list<Bala*> bullets;
+    list<Bala*> deadBullets;
 };

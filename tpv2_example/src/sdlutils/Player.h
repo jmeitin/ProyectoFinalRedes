@@ -1,6 +1,8 @@
+#pragma once
+
 #include "GameObject.h"
 #include "InputHandler.h"
-#include "Bala.h"
+
 
 class Game;
 

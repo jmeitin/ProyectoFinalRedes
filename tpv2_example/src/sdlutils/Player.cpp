@@ -1,4 +1,3 @@
-
 #include "Player.h"
 #include "Game.h" //inclusion circular
 
@@ -20,17 +19,18 @@ void Player::update()
             move(speed,0);
         else if(ihs->isKeyDown(SDLK_LEFT) && currentPos.first - speed >= 0)
             move(-speed,0);
-        else if(ihs->isKeyDown(SDLK_UP) && currentPos.second + speed <= HEIGHT)
+        else if(ihs->isKeyDown(SDLK_DOWN) && currentPos.second + speed <= HEIGHT)
             move(0, speed);
-        else if(ihs->isKeyDown(SDLK_DOWN) && currentPos.second - speed >= 0)
+        else if(ihs->isKeyDown(SDLK_UP) && currentPos.second - speed >= 0)
             move(0, -speed);
 
         // DISPARAR----------------------------------------------------------
-        else if(ihs->isKeyDown(SDLK_SPACE)){
-            game->crearBala(currentPos, jugadorA);           
+        else if(ihs->isKeyDown(SDLK_z)){
+            game->crearBala(currentPos, jugadorA);
+            std::cout << "a\n";
         }
-        
-        
+
+
 
     }
 }

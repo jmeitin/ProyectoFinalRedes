@@ -1,3 +1,6 @@
+
+#pragma once
+
 #include "GameObject.h"
 //#include "InputHandler.h"
 class Bala : public GameObject{

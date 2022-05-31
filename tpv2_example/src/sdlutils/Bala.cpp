@@ -5,6 +5,7 @@ Bala::Bala(Texture* t , int x ,int y, int s, int w, int h) : GameObject(t,x,y){
     speed = s;
     WIDTH = w;
     HEIGHT = h;
+     std::cout << "a\n";
 }
 
 void Bala::update()

@@ -5,7 +5,7 @@
 
 int main(int ac, char **av) {
 	try {
-		Game game();
+		Game game;
 		game.start();
 		//sdlutils_basic_demo();
 	} catch (const std::string &e) { // catch exceptions thrown as strings
