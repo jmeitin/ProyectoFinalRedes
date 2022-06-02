@@ -59,10 +59,10 @@ int Message::from_bin(char * bobj){
  }
 
 
-void PlayerKilled::to_bin() {
+void PlayerMsg::to_bin() {
 
  }
- int PlayerKilled::from_bin(char * bobj) {
+ int PlayerMsg::from_bin(char * bobj) {
      
  }
 

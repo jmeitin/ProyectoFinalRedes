@@ -29,13 +29,13 @@ public:
      *  lo distribuye a los clientes. Mantiene actualizada la lista de clientes
      */
     void net_thread();
-    void game_thread();
+    
 private:
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
      */
-    std::vector<cliente> clients;
+    std::vector<std::unique_ptr<Socket>> clients;
 
     /**
      * Socket del servidor

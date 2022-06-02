@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/jonathan/Escritorio/ProyectoFinalRedes/tpv2_example/src'
+make: Leaving directory '/home/jonathan/Escritorio/ProyectoFinalRedes/tpv2_example/src'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

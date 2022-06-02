@@ -50,7 +50,7 @@ public:
 
 //esta clase sirve tanto para mandar player y su orientacion como bala y la orientacion en la que ha sido creada---------------------
 class Object: public Message{
-    public:
+public:
     Object(){};
     Object(const uint8_t& p, const uint8_t& px, const uint8_t& py, const float& r): player((host_t)p),
                                                                                 posx(px), 
@@ -59,18 +59,18 @@ class Object: public Message{
 
     void to_bin() override;
     int from_bin(char * bobj) override;
-    private:
+    
     host_t player ;
     uint8_t posx, posy;
     float rot;
     
 };
 
-class PlayerKilled: public Message{
+class PlayerMsg: public Message{
 
 public:
-    PlayerKilled(){};
-    PlayerKilled(const uint8_t& p):player(host_t(p)){};
+    PlayerMsg(){};
+    PlayerMsg(const uint8_t& p):player(host_t(p)){};
 
     void to_bin() override;
     int from_bin(char * bobj) override;

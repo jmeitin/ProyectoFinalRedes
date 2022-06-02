@@ -10,15 +10,18 @@
 #include "macros.h"
 #include "SDLUtils.h"
 #include "Bala.h"
-#include "Socket.h"
+#include "../network/Socket.h"
 
-#include "Message.h"
+#include "../network/Message.h"
 using namespace std;
 const int WIDTH = 800;
 const int HEIGHT = 600;
 const int SPEED = 30;
 
 enum host_t { p1 = 0, p2 = 1};  
+
+std::pair<int,int> posiciones[2] = {{WIDTH/27, HEIGHT/2},{WIDTH-WIDTH/8, HEIGHT/2}};
+
 
 class Client{
 public:

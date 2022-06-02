@@ -9,7 +9,7 @@ class Client;
 class Player : public GameObject{
 public:
     Player(Client*, Texture*, int x,int y, int s, int w, int h);
-    void update();
+    bool update();
 protected:
     InputHandler* ihs;
     int speed;
