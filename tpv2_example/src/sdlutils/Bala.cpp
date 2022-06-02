@@ -17,7 +17,3 @@ void Bala::update()
     move(velocity);
     
 }
-
- bool Bala::getCreator(){
-     return jugadorA;
- }

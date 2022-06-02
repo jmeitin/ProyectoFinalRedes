@@ -8,10 +8,10 @@
 #include "Socket.h"
 
 
-class Message: public Serializable
+class   Message: public Serializable
 {
 public:
-    static const size_t MESSAGE_SIZE = sizeof(char) * 88 + sizeof(uint8_t);
+    static const size_t MESSAGE_SIZE = sizeof(char) * 63 + sizeof(uint8_t);
 
     enum host_t { p1 = 0, p2 = 1};  
 
@@ -21,49 +21,38 @@ public:
         LOGOUT = 1,
         PLAYERPOS  = 2,
         SHOT = 3,
-        PlAYERKILLED = 4
+        PlAYERKILLED = 4,
+        CONFIRMATION = 5
     };
 
     Message(){};
 
-    virtual void to_bin() = 0;
+    virtual void to_bin() ;
 
-    virtual int from_bin(char * bobj) = 0;
+    virtual int from_bin(char * bobj);
 
     uint8_t type;
+    std::string msgData;
 };
 
 class LogMessage: public Message{
 
 public:
     LogMessage(){};
-    LogMessage(const std::string& n, const std::string& m):nick(n),message(m){};
+    LogMessage(const std::string& n):nick(n){};
 
     void to_bin() override;
     int from_bin(char * bobj) override;
-private:
 
     std::string nick;
-    std::string message;
 };
 
-class PlayerPos: public Message{
-    public:
-    PlayerPos(){};
-    PlayerPos(const int& p, const uint8_t& px, const uint8_t& py):player((host_t)p),posx(px), posy(py){};
 
-    void to_bin() override;
-    int from_bin(char * bobj) override;
-    private:
-    host_t player;
-    uint8_t posx, posy;
-    
-};
-
-class Bullet: public Message{
+//esta clase sirve tanto para mandar player y su orientacion como bala y la orientacion en la que ha sido creada---------------------
+class Object: public Message{
     public:
-    Bullet(){};
-    Bullet(const uint8_t& p, const uint8_t& px, const uint8_t& py, const float& r): player((host_t)p),
+    Object(){};
+    Object(const uint8_t& p, const uint8_t& px, const uint8_t& py, const float& r): player((host_t)p),
                                                                                 posx(px), 
                                                                                 posy(py),
                                                                                 rot(r){};
@@ -85,6 +74,31 @@ public:
 
     void to_bin() override;
     int from_bin(char * bobj) override;
-private:
+
     host_t player;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// class PlayerPos: public Message{
+//     public:
+//     PlayerPos(){};
+//     PlayerPos(const int& p, const uint8_t& px, const uint8_t& py):player((host_t)p),posx(px), posy(py){};
+
+//     void to_bin() override;
+//     int from_bin(char * bobj) override;
+//     private:
+//     host_t player;
+//     uint8_t posx, posy;
+    
+// };

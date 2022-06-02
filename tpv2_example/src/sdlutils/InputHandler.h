@@ -127,7 +127,7 @@ public:
 	}
 
 	// TODO add support for Joystick, see Chapter 4 of
-	// the book 'SDL Game Development'
+	// the book 'SDL Client Development'
 
 private:
 	InputHandler() {

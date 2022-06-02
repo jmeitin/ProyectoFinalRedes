@@ -9,7 +9,7 @@ LIBS=-lpthread
 
 all: cs cc
 
-cs: $(OBJ) ChatServer.o
+cs: $(OBJ) Server.o
 	g++ -o $@ $^ $(CFLAGS) $(LIBS)
 
 cc: $(OBJ) ChatClient.o

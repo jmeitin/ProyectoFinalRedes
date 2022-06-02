@@ -1,18 +1,18 @@
 #include "Player.h"
 #include "Game.h" //inclusion circular
 #include "Texture.h"
-Player::Player(Game* g, Texture* t , int x ,int y, int s, int w, int h,bool j) : GameObject(t,x,y){
+Player::Player(Client* g, Texture* t , int x ,int y, int s, int w, int h) : GameObject(t,x,y){
     ihs = InputHandler::instance();
     speed = s;
     WIDTH = w;
     HEIGHT = h;
-    game = g;
-    jugadorA = j;
+    client = g;
+    
 }
 
 void Player::update()
 {
-    if(jugadorA){
+   
             int Delta_x; int Delta_y;
             int mouse_x, mouse_y;
             rot;
@@ -63,9 +63,9 @@ void Player::update()
 
             // DISPARAR----------------------------------------------------------
             if(ihs->isKeyDown(SDLK_SPACE)){
-                game->crearBala(currentPos, jugadorA, rot);
+                client->crearBala(currentPos, rot);
             
             }
         }
-    }   
+    }  
 }

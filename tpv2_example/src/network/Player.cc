@@ -1,9 +1,9 @@
 #include <thread>
-#include "Chat.h"
+#include "../sdlutils/Game.h"
 
 int main(int argc, char **argv)
 {
-    ChatClient ec(argv[1], argv[2], argv[3]);    
+    Client ec(argv[1], argv[2], argv[3]);    
     std::thread ([&ec](){ ec.net_thread(); delete &ec; }).detach();    
 
     ec.login();

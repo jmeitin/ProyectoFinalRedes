@@ -8,18 +8,18 @@
 #include "Socket.h"
 
 #include "Message.h"
-#define player std::pair<host_t,std::unique_ptr<Socket>> 
+#define cliente std::pair<host_t,std::unique_ptr<Socket>> 
 
 /**
  *  Clase para el servidor de chat
  */
-class ChatServer
+class Server
 {
 public:
 
     enum host_t { p1 = 0, p2 = 1};
 
-    ChatServer(const char * s, const char * p): socket(s, p)
+    Server(const char * s, const char * p): socket(s, p)
     {
         socket.bind();
     };
@@ -35,7 +35,7 @@ private:
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
      */
-    std::vector<player> clients;
+    std::vector<cliente> clients;
 
     /**
      * Socket del servidor

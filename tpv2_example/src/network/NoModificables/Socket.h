@@ -81,12 +81,18 @@ public:
      *    @return 0 en caso de éxito o -1 si error (cerrar conexión)
      */
     int recv(Serializable &obj, Socket * &sock);
-
+    int recv(Serializable &obj,char* buffer, Socket * &sock);
     int recv(Serializable &obj) //Descarta los datos del otro extremo
     {
         Socket * s = 0;
 
         return recv(obj, s);
+    }
+     int recv(Serializable &obj, char* buffer) //Descarta los datos del otro extremo
+    {
+        Socket * s = 0;
+      
+        return recv(obj, buffer, s);
     }
 
     /**
