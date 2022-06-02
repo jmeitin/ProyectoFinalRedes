@@ -14,6 +14,7 @@ public:
     void render();  
      void move(Vector2D);  
     void move(int x,int y);
+    void move(int px , int py, double r);
     bool isDestroyable(){return destructible;};
     void setDestroyable(bool d){destructible = d;};
 

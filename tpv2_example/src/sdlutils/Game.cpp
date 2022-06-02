@@ -33,20 +33,26 @@ void Client::net_thread()
 		char buffer[Message::MESSAGE_SIZE];
         socket.recv(message,buffer);
 		if(!playing && message.type == Message::MessageType::CONFIRMATION){
-			 playing = true;
+			PlayerMsg player; player.from_bin(buffer);
+			MyPlayerID = message.player;
+			startGame();
+			playing = true;			
+			continue;
 		}
-      
-      
-
 		if(playing){
 			if (message.type == Message::MessageType::PLAYERPOS){
 				Object player; player.from_bin(buffer);
+				player.type = Message::MessageType::PLAYERPOS;
+				player2.move(player.posx, player.posy, player.rot);
 			}
 			else if (message.type == Message::MessageType::SHOT){
-				Object player; player.from_bin(buffer);
+				PlayerMsg bullet; bullet.from_bin(buffer);
+				pair <int,int> aux{player2->GetPosition().first, player2->GetPosition().second}
+				crearBalaEnemiga(aux, bullet.rot);
 			}
 			else if (message.type == Message::MessageType::PlAYERKILLED){
-				PlayerKilled player; player.from_bin(buffer);
+				PlayerMsg player; player.from_bin(buffer);
+				delete player2;
 			}
 			else if(message.type == Message::MessageType::LOGOUT){
 				playing = false;
@@ -60,7 +66,7 @@ void Client::startGame(){
     // Initialise the SDLGame singleton
 	SDLUtils::init("SDLGame Demo!", WIDTH, HEIGHT,
 			"resources/config/sdlutilsdemo.resources.json");
-
+	
     sdl = SDLUtils::instance();
 
     //show the cursor
@@ -70,8 +76,9 @@ void Client::startGame(){
 	renderer = sdl->renderer();
 
 	// we can take textures from the predefined ones, and we can create a custom one as well
-	player = new Player(this, &sdl->images().at("fighter"),10,10, 10, WIDTH, HEIGHT);
-
+	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID],posiciones[MyPlayerID], SPEED, WIDTH, HEIGHT);
+	int otherID = (MyPlayerID + 1) % 2	;
+	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID],posiciones[otherID], SPEED, WIDTH, HEIGHT);
 	ih = InputHandler::instance();
 
     
@@ -79,6 +86,7 @@ void Client::startGame(){
 
 void Client::game_thread(){
     while (!exit_) {
+		if(playing){
 		Uint32 startTime = sdl->currRealTime();
 
 		// update the event handler
@@ -94,8 +102,11 @@ void Client::game_thread(){
 		// clear screen
 		sdl->clearRenderer();
 
-		player->update();
-		//player2->update();
+		if(player->update()){
+			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player.getRot());
+			socket.send(posMsg, socket);
+
+		}
 
 		checkCollision();
 		
@@ -146,14 +157,18 @@ void Client::game_thread(){
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
 	}
-
+	}
 	// stop the music
 	//Music::haltMusic();
 }
 
 void Client::crearBala(pair<int,int> currentPos, double rot){
     MyBullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot));	
+	PlayerMsg shot = PlayerMsg(MyPlayerID);
+	shot.type = Message::MessageType::SHOT;
+	socket();
 }
+
 
 void Client::crearBalaEnemiga(pair<int,int> pos, double rot){
 
@@ -171,6 +186,9 @@ void Client::checkCollision(){
 				MyDeadBullets.push_back((*bullet));
 				exit_ = true;
 
+				PlayerMsg msg = PlayerMsg(MyPlayerID);
+				msg.type = Message::MessageType::PlAYERKILLED;
+				socket.send(msg, socket);
 				//mensaje de que he perdido -----------------------------
 				std::cout<< "ganó jugador B";
 			}

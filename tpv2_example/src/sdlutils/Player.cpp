@@ -10,24 +10,28 @@ Player::Player(Client* g, Texture* t , int x ,int y, int s, int w, int h) : Game
     
 }
 
-void Player::update()
+bool Player::update()
 {
-   
-            int Delta_x; int Delta_y;
-            int mouse_x, mouse_y;
-            rot;
-            SDL_GetMouseState(&mouse_x, &mouse_y);
-            Delta_x = pos.x - mouse_x;
-            Delta_y = pos.y - mouse_y ;
+        bool moverse = false;
+        bool rotate = false;
+        int Delta_x; int Delta_y;
+        int mouse_x, mouse_y;
+        double prevRot = rot;
+        
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+        Delta_x = pos.x - mouse_x;
+        Delta_y = pos.y - mouse_y ;
+        
+        rot = (atan2(Delta_y, Delta_x ) * 180.0000)/ 3.14159265;
+        
+        rot-=90;
+
+        if(prevRot != rot) rotate = true
+
+        if (ihs->keyDownEvent()){
+            // MOVIMIENTO------------------------------------------------------
+            std::pair<int,int> currentPos = GetPosition();
             
-            rot = (atan2(Delta_y, Delta_x ) * 180.0000)/ 3.14159265;
-            rot-=90;
-
-
-            if (ihs->keyDownEvent()){
-                // MOVIMIENTO------------------------------------------------------
-                std::pair<int,int> currentPos = GetPosition();
-                bool moverse = false;
 
             Vector2D velocity{0,0};
 
@@ -65,7 +69,9 @@ void Player::update()
             if(ihs->isKeyDown(SDLK_SPACE)){
                 client->crearBala(currentPos, rot);
             
+
             }
-        }
-    }  
-}
+    }
+        return moverse || rotate;
+}  
+

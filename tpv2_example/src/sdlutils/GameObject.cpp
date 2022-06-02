@@ -33,6 +33,12 @@ float GameObject::getH(){
 float GameObject::getRot(){
     return rot;
 }
+
+void GameObject::move(int px , int py, double r){
+    pos.x = px;
+    pos.y = py;
+    rot = r;
+}
 // void GameObject::move(int x ,int y){
 //     pos.x += x;
 //     pos.y += y;
