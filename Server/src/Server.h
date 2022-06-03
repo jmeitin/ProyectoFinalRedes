@@ -49,7 +49,7 @@ private:
     int numPlayers= 0;
     const int MAX_PLAYERS = 2;
 
-    bool playing = false;
+   
 };
 
 #endif /* SOCKET_H_ */

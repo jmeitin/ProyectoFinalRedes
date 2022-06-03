@@ -49,7 +49,6 @@ void Client::net_thread() {
 			PlayerMsg playerm1; playerm1.from_bin(buffer);
 
 			MyPlayerID = playerm1.player;
-			 std::cout <<  MyPlayerID <<" \n"; 
 
 			startGame();
 			
@@ -68,9 +67,10 @@ void Client::net_thread() {
 				//INSTANCIA BALA ==> EnemyBullets
 				crearBalaEnemiga(aux, player2->getRot());
 			}
-			else if (message.type == Message::MessageType::PlAYERKILLED){				
+			else if (message.type == Message::MessageType::PlAYERKILLED){		
+				std::cout << "ganaste"<< "\n"		;
 				logout();
-				
+				break;
 			}
 			
 		}
@@ -109,6 +109,8 @@ void Client::startGame(){
 	background = &sdl->images().at("background"); //FONDO ESTRELLAS
 	
 	ih = InputHandler::instance();    
+
+	//sdl->musics().at("beat").play();
 }
 
 void Client::game_thread(){
@@ -127,8 +129,7 @@ void Client::game_thread(){
 			}
 		}
 		//JUGANDO
-		if(playing){		
-			//Uint32 startTime = sdl->currRealTime();			
+		if(playing){				
 			
 			// clear screen
 			sdl->clearRenderer();
@@ -142,8 +143,11 @@ void Client::game_thread(){
 
 			// EnemyDeadBullets x player
 			checkCollision();
-		
+			
 			updateAllBullets();
+
+			//cuando borro mis balas, se cierra mi consola de juego
+			//cuando borro las balas enemigas, cierro la consola enemiga
 			//freeDeadBullets();
 
 			// RENDER---------------------------------------------------
@@ -151,36 +155,19 @@ void Client::game_thread(){
 			background->render(dest,0); //esquina 0,0
 			for(Bala* bullet : MyBullets) bullet->render();
 			for(Bala* bullet : EnemyBullets) bullet->render();
-
-	checkCollision();
-		
-	 updateAllBullets();
-	 
 	
-	// 	//RENDER---------------------------------------------------
-	 	for(Bala* bullet : MyBullets) bullet->render();
-	 	for(Bala* bullet : EnemyBullets) bullet->render();
-	freeDeadBullets();
-	 	player->render();
-	 	player2->render();
 		
-		
-	// 	// present new frame
-	 	sdl->presentRenderer();
+		 	// present new frame
+	 	
 			player->render();
 			player2->render();			
-			
-			// present new frame
+
 			sdl->presentRenderer();
 
-			//Uint32 frameTime = sdl->currRealTime() - startTime;
-
-			// if (frameTime < 20)
-			// 	SDL_Delay(20 - frameTime);
+		
 		 }
 	 }
-	// stop the music
-	//Music::haltMusic();
+
 }
 
 void Client::updateAllBullets(){
@@ -204,17 +191,26 @@ void Client::updateAllBullets(){
 }
 
 void Client::freeDeadBullets(){
-	while (!MyDeadBullets.empty()) {
-		MyBullets.remove(MyDeadBullets.back());
-		delete MyDeadBullets.back();
-		MyDeadBullets.pop_back();
-	} 
-
-	while (!EnemyDeadBullets.empty()) {
-		EnemyBullets.remove(EnemyDeadBullets.back());
-		delete EnemyDeadBullets.back();
-		EnemyDeadBullets.pop_back();
+	for (auto bul : MyDeadBullets){
+		MyBullets.remove(bul);
+		delete bul;
 	}
+	MyDeadBullets.clear();
+	// while (!MyDeadBullets.empty()) {
+	// 	MyBullets.remove(MyDeadBullets.back());
+	// 	delete MyDeadBullets.back();
+	// 	MyDeadBullets.pop_back();
+	// } 
+	for (auto bul : EnemyDeadBullets){
+		EnemyBullets.remove(bul);
+		delete bul;
+	}
+	EnemyDeadBullets.clear();
+	// while (!EnemyDeadBullets.empty()) {
+	// 	EnemyBullets.remove(EnemyDeadBullets.back());
+	// 	delete EnemyDeadBullets.back();
+	// 	EnemyDeadBullets.pop_back();
+	// }
 }
 
 void Client::crearBala(pair<int,int> currentPos, float rot){
@@ -222,10 +218,12 @@ void Client::crearBala(pair<int,int> currentPos, float rot){
 	PlayerMsg shot = PlayerMsg(MyPlayerID);
 	shot.type = Message::MessageType::SHOT;
 	socket.send(shot, socket);
+	sdl->soundEffects().at("wall_hit").play();
 }
 
 void Client::crearBalaEnemiga(pair<int,int> pos, float rot){
     EnemyBullets.push_back(new Bala(&sdl->images().at("fire"), pos.first, pos.second, SPEED, WIDTH, HEIGHT, rot));	
+	sdl->soundEffects().at("wall_hit").play();
 }
 
 //COLISION BALAS ENEMIGAS x PLAYER
@@ -242,9 +240,10 @@ void Client::checkCollision(){
 				msg.type = Message::MessageType::PlAYERKILLED;
 				socket.send(msg, socket);
 				logout();
-				
+				sdl->soundEffects().at("explosion").play();
 				//mensaje de que he perdido -----------------------------
-				std::cout<< "ganó jugador B";
+				int otherID = (MyPlayerID + 1) % 2	;
+				std::cout<< "ganó jugador "<< otherID << "\n";
 			}			
 	}
 			
@@ -254,35 +253,3 @@ float Client::getSDLcurrTime(){
 	return sdl->currRealTime();
 }
 
-
-
-// void ChatClient::input_thread()
-// {
-//     while (true)
-//     {
-//         // Leer stdin con std::getline
-//         // Enviar al servidor usando socket
-//         std::string msg;
-//         std::getline(std::cin, msg);
-//         if (msg == "q" || msg == "Q" ) {
-//             logout();
-//             break;
-//         }
-//         ChatMessage chatMsg(nick, msg);
-//         chatMsg.type = ChatMessage::MessageType::MESSAGE;
-//         socket.send(chatMsg, socket);
-//     }
-// }
-
-// void ChatClient::net_thread()
-// {
-//     while(true)
-//     {
-//         //Recibir Mensajes de red
-//         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
-//         ChatMessage chatMsg;
-//         socket.recv(chatMsg);
-//         if(chatMsg.type == ChatMessage::MessageType::LOGOUT)break;
-//         std::cout << chatMsg.nick << ": " << chatMsg.message << "\n";
-//     }
-// }

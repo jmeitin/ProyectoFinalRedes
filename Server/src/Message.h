@@ -14,7 +14,7 @@
 class   Message: public Serializable
 {
 public:
-    static const size_t MESSAGE_SIZE = sizeof(char) * 63 + sizeof(uint8_t);
+    static const size_t MESSAGE_SIZE = sizeof(char) * 9 + sizeof(uint8_t) + sizeof(int) * 2 + sizeof(float);
 
     enum host_t { p1 = 0, p2 = 1};  
 
@@ -35,6 +35,7 @@ public:
     virtual int from_bin(char * bobj);
 
     uint8_t type;
+    
 };
 
 class LogMessage: public Message{
@@ -50,7 +51,7 @@ public:
 };
 
 
-//esta clase sirve tanto para mandar player y su orientacion como bala y la orientacion en la que ha sido creada---------------------
+//esta clase sirve tanto para mandar player y su orientacion 
 class Object: public Message{
 public:
     Object(){};
@@ -80,4 +81,28 @@ public:
     host_t player;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+// class PlayerPos: public Message{
+//     public:
+//     PlayerPos(){};
+//     PlayerPos(const int& p, const uint8_t& px, const uint8_t& py):player((host_t)p),posx(px), posy(py){};
+
+//     void to_bin() override;
+//     int from_bin(char * bobj) override;
+//     private:
+//     host_t player;
+//     uint8_t posx, posy;
+    
+// };
 #endif /* SOCKET_H_ */

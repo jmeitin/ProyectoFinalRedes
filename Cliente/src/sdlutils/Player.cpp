@@ -72,7 +72,7 @@ bool Player::update() { //DEVUELVE TRUE SI HA CAMBIADO
             if(ihs->isKeyDown(SDLK_SPACE) && client->getSDLcurrTime() > (timeLastShot + COOLDOWN)){
                 client->crearBala(currentPos, rot);
                 timeLastShot = client->getSDLcurrTime();
-                cout << timeLastShot<< "\n";
+                
             }
     }
 

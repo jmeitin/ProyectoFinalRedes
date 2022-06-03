@@ -27,27 +27,27 @@ void Server::net_thread()
             LogMessage log ; log.from_bin(buffer);
             std::unique_ptr<Socket> uPtr(clientSd);
             numPlayers+= 1;
-            //cliente aux = cliente((host_t)numPlayers,std::move(uPtr));
+            
             clients.push_back(std::move(uPtr));
             std::cout << log.nick << " logged in\n" << "player: "<< numPlayers<< "\n";  
             if(numPlayers == 2){
            for (int i = 0; i < clients.size(); ++i) { 
-                Message::host_t host =  Message::host_t(i); 
-                std::cout <<  host <<" \n";  
+                Message::host_t host =  Message::host_t(i);                 
                 PlayerMsg idMsg(host);
                 idMsg.type = Message::MessageType::CONFIRMATION;            
                 socket.send(idMsg, (*clients[i].get()));               
             }
             std::cout <<  " confirmaciones\n";  
-            }            
+            }    
+            
         }
-        
         else if (message.type == Message::MessageType::LOGOUT) { 
             LogMessage log ; log.from_bin(buffer);          
             auto it = clients.begin();            
             while (it != clients.end() && !(*(*it).get() == *clientSd)) it++;
             clients.erase(it);
-            --numPlayers; playing = false;
+            numPlayers-=1;
+            
             std::cout << log.nick << " logged out\n";
         }
 
@@ -61,8 +61,11 @@ void Server::net_thread()
         else if (message.type == Message::MessageType::SHOT || message.type == Message::MessageType::PlAYERKILLED){
             PlayerMsg shot; shot.from_bin(buffer);
             int otherID = (shot.player + 1) % 2;
-            std::cout << otherID << "\n";
+            
             socket.send(shot, *clients[otherID].get());
-        }      
+        }   
+
     }
+
+
 }
