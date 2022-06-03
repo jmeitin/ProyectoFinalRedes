@@ -55,7 +55,7 @@ public:
 class Object: public Message{
 public:
     Object(){};
-    Object(const uint8_t& p, const uint8_t& px, const uint8_t& py, const float& r): player((host_t)p),
+    Object(const host_t& p, const int& px, const int& py, const float& r): player((host_t)p),
                                                                                 posx(px), 
                                                                                 posy(py),
                                                                                 rot(r){};
@@ -64,7 +64,7 @@ public:
     int from_bin(char * bobj) override;
     
     host_t player ;
-    uint8_t posx, posy;
+    int posx, posy;
     float rot;
     
 };
@@ -73,7 +73,7 @@ class PlayerMsg: public Message{
 
 public:
     PlayerMsg(){};
-    PlayerMsg(const uint8_t& p):player(host_t(p)){};
+    PlayerMsg(const host_t& p):player(host_t(p)){};
 
     void to_bin() override;
     int from_bin(char * bobj) override;

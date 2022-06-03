@@ -2,7 +2,7 @@
 
   
   "images" : [
-    { "id" : "sdl_logo", "file" : "../resources/images/SDL_logo.png" },
+  
     { "id" : "fire", "file" : "../resources/images/fire.png" },
     { "id" : "fighter", "file" : "../resources/images/fighter.png" }
   ],

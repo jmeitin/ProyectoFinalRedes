@@ -1,6 +1,6 @@
 #include "Bala.h"
 
-Bala::Bala(Texture* t , int x ,int y, int s, int w, int h,double r) : GameObject(t,x,y,r){
+Bala::Bala(Texture* t , int x ,int y, int s, int w, int h,float r) : GameObject(t,x,y,r){
     //ihs = InputHandler::instance();
     speed = s;
     WIDTH = w;

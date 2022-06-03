@@ -59,11 +59,11 @@ int Message::from_bin(char * bobj){
     memcpy(bin, &player, sizeof(host_t));
     bin += sizeof(host_t);  
 
-     memcpy(bin, &posx, sizeof(uint8_t));
-    bin += sizeof(uint8_t);  
+     memcpy(bin, &posx, sizeof(int));
+    bin += sizeof(int);  
 
-     memcpy(bin, &posy, sizeof(uint8_t));
-    bin += sizeof(uint8_t);  
+     memcpy(bin, &posy, sizeof(int));
+    bin += sizeof(int);  
 
     memcpy(bin, &rot, sizeof(float));
     bin += sizeof(float);  
@@ -78,11 +78,11 @@ int Message::from_bin(char * bobj){
      memcpy(&player, bin, sizeof(host_t));
     bin += sizeof(host_t);  
 
-     memcpy( &posx, bin,sizeof(uint8_t));
-    bin += sizeof(uint8_t);  
+     memcpy( &posx, bin,sizeof(int));
+    bin += sizeof(int);  
 
-     memcpy(&posy, bin,sizeof(uint8_t));
-    bin += sizeof(uint8_t);  
+     memcpy(&posy, bin,sizeof(int));
+    bin += sizeof(int);  
 
     memcpy(&rot, bin, sizeof(float));
     bin += sizeof(float);  

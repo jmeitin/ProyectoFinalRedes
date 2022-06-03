@@ -10,7 +10,7 @@ struct position{
     int y;
 };
 public:
-    GameObject(Texture* text , int x , int y, double r = 0);
+    GameObject(Texture* text , int x , int y, float r = 0);
     virtual ~GameObject();
     std::pair<int,int> GetPosition();
     void render();  

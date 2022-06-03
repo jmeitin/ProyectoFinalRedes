@@ -54,8 +54,8 @@ void Client::net_thread()
         socket.recv(message,buffer);
 		if(!playing && message.type == Message::MessageType::CONFIRMATION){
 		
-			PlayerMsg player; player.from_bin(buffer);
-			MyPlayerID = player.player;
+			PlayerMsg playerm1; playerm1.from_bin(buffer);
+			MyPlayerID = playerm1.player;
 			startGame();
 			
 			playing = true;			
@@ -63,9 +63,9 @@ void Client::net_thread()
 		}
 		if(playing){
 			if (message.type == Message::MessageType::PLAYERPOS){
-				Object player; player.from_bin(buffer);
-				player.type = Message::MessageType::PLAYERPOS;
-				player2->move(player.posx, player.posy, player.rot);
+				Object playerm2; playerm2.from_bin(buffer);
+				
+				//player2->move(playerm2.posx, playerm2.posy, playerm2.rot);
 			}
 			else if (message.type == Message::MessageType::SHOT){
 				PlayerMsg bullet; bullet.from_bin(buffer);
@@ -120,8 +120,8 @@ void Client::startGame(){
 void Client::game_thread(){
     while (!exit_) {
 		if(playing){
-			
-		Uint32 startTime = sdl->currRealTime();
+		
+		//Uint32 startTime = sdl->currRealTime();
 		
 		// // update the event handler
 		ih->refresh();
@@ -137,13 +137,13 @@ void Client::game_thread(){
 			}
 		}
 
-		
-		if(player->update()){
-			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
-			posMsg.type = Message::MessageType::PLAYERPOS;
-			socket.send(posMsg, socket);
+		player->update();
+		// if(player->update()){
+		// 	Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
+		// 	posMsg.type = Message::MessageType::PLAYERPOS;
+		// 	socket.send(posMsg, socket);
 
-		}
+		// }
 
 	// 	checkCollision();
 		
@@ -160,10 +160,10 @@ void Client::game_thread(){
 	// 	// present new frame
 	 	sdl->presentRenderer();
 
-		Uint32 frameTime = sdl->currRealTime() - startTime;
+		//Uint32 frameTime = sdl->currRealTime() - startTime;
 
-		if (frameTime < 20)
-			SDL_Delay(20 - frameTime);
+		// if (frameTime < 20)
+		// 	SDL_Delay(20 - frameTime);
 		 }
 	 }
 	// stop the music
