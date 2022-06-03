@@ -5,9 +5,7 @@ Client::Client(const char* ip, const char* port, const char * n): socket(ip,port
 	
 	nick = n;
 
-//	std::cout << nick<<std::endl;
 
-	
 }
 
 Client::~Client(){
@@ -124,7 +122,9 @@ void Client::startGame(){
 
 void Client::game_thread(){
     while (!exit_) {
+		
 			if(ih != nullptr){
+				ih->refresh();
 				if (ih->keyDownEvent() )
 				{
 				if(ih->isKeyDown(SDLK_q)){
@@ -138,7 +138,7 @@ void Client::game_thread(){
 		//Uint32 startTime = sdl->currRealTime();
 		
 		// // update the event handler
-		ih->refresh();
+		
 			// clear screen
 		sdl->clearRenderer();
 
@@ -155,7 +155,7 @@ void Client::game_thread(){
 	checkCollision();
 		
 	 updateAllBullets();
-	// freeDeadBullets();
+	
 	// 	//RENDER---------------------------------------------------
 	 	for(Bala* bullet : MyBullets) bullet->render();
 	 	for(Bala* bullet : EnemyBullets) bullet->render();
@@ -167,10 +167,6 @@ void Client::game_thread(){
 	// 	// present new frame
 	 	sdl->presentRenderer();
 
-		//Uint32 frameTime = sdl->currRealTime() - startTime;
-
-		// if (frameTime < 20)
-		// 	SDL_Delay(20 - frameTime);
 		 }
 	 }
 	// stop the music
@@ -247,6 +243,9 @@ void Client::checkCollision(){
 			
     }
 	
+float Client::getSDLcurrTime(){
+	return sdl->currRealTime();
+}
 
 
 

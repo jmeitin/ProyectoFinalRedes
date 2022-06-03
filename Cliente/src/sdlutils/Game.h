@@ -36,7 +36,7 @@ public:
     void game_thread();
     void crearBala(pair<int,int> pos,float rot);
     void crearBalaEnemiga(pair<int,int> pos, float rot);
-    
+    float getSDLcurrTime();
 private:  
     void checkCollision();
     void freeDeadBullets();

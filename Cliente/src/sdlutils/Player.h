@@ -18,8 +18,8 @@ protected:
     int WIDTH;
     int HEIGHT;
     Client* client = nullptr;
-   
-
+    float timeLastShot = 0; 
+    const float COOLDOWN = 1000;
 };
 
 #endif

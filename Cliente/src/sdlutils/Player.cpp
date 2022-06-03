@@ -68,10 +68,10 @@ bool Player::update()
             }
 
             // DISPARAR----------------------------------------------------------
-            if(ihs->isKeyDown(SDLK_SPACE)){
+            if(ihs->isKeyDown(SDLK_SPACE) && client->getSDLcurrTime() > (timeLastShot + COOLDOWN)){
                 client->crearBala(currentPos, rot);
-            
-
+                timeLastShot = client->getSDLcurrTime();
+                cout << timeLastShot<< "\n";
             }
     }
         return moverse || rotate;
