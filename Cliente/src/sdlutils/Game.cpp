@@ -116,6 +116,9 @@ void Client::game_thread(){
 	//BUCLE DE JUEGO
     while (!exit_) {
 		if(ih != nullptr){
+			// update the event handler
+			ih->refresh();
+
 			//SALIR DEL JUEGO
 			if (ih->keyDownEvent() ) {
 				if(ih->isKeyDown(SDLK_q)){
@@ -126,10 +129,8 @@ void Client::game_thread(){
 		}
 		//JUGANDO
 		if(playing){		
-			//Uint32 startTime = sdl->currRealTime();
+			//Uint32 startTime = sdl->currRealTime();			
 			
-			// update the event handler
-			ih->refresh();
 			// clear screen
 			sdl->clearRenderer();
 
