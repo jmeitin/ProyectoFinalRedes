@@ -13,6 +13,7 @@
 #include "Bala.h"
 #include "../network/Socket.h"
 #include "../network/Message.h"
+#include "Texture.h"
 
 using namespace std;
 const int WIDTH = 800;
@@ -51,6 +52,7 @@ protected:
     SDLUtils* sdl = nullptr;
     SDL_Renderer* renderer = nullptr;
     InputHandler* ih = nullptr;
+    Texture* background = nullptr;
 
     //JUGADORES
     Player* player = nullptr;

@@ -6,6 +6,7 @@ Client::Client(const char* ip, const char* port, const char * n): socket(ip,port
 }
 
 Client::~Client(){
+	if(background != nullptr) delete background;
 	if(player != nullptr) delete player;
 	if(player2 != nullptr) delete player2;
 	freeDeadBullets(); 
@@ -105,6 +106,8 @@ void Client::startGame(){
 	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID].first,posiciones[MyPlayerID].second, SPEED, WIDTH, HEIGHT);
 	int otherID = (MyPlayerID + 1) % 2	;
 	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID].first,posiciones[otherID].second, SPEED, WIDTH, HEIGHT);
+
+	background = &sdl->images().at("background"); //FONDO ESTRELLAS
 	
 	ih = InputHandler::instance();    
 }
@@ -144,6 +147,8 @@ void Client::game_thread(){
 			//freeDeadBullets();
 
 			// RENDER---------------------------------------------------
+			SDL_Rect dest = { 0, 0, WIDTH, HEIGHT };
+			background->render(dest,0); //esquina 0,0
 			for(Bala* bullet : MyBullets) bullet->render();
 			for(Bala* bullet : EnemyBullets) bullet->render();
 
