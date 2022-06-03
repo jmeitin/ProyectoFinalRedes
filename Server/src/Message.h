@@ -35,7 +35,6 @@ public:
     virtual int from_bin(char * bobj);
 
     uint8_t type;
-    
 };
 
 class LogMessage: public Message{
@@ -81,28 +80,4 @@ public:
     host_t player;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-// class PlayerPos: public Message{
-//     public:
-//     PlayerPos(){};
-//     PlayerPos(const int& p, const uint8_t& px, const uint8_t& py):player((host_t)p),posx(px), posy(py){};
-
-//     void to_bin() override;
-//     int from_bin(char * bobj) override;
-//     private:
-//     host_t player;
-//     uint8_t posx, posy;
-    
-// };
 #endif /* SOCKET_H_ */

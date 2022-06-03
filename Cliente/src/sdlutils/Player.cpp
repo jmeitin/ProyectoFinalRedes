@@ -1,42 +1,43 @@
 #include "Player.h"
 #include "Game.h" //inclusion circular
 #include "Texture.h"
+
 Player::Player(Client* g, Texture* t , int x ,int y, int s, int w, int h) : GameObject(t,x,y){
     ihs = InputHandler::instance();
     speed = s;
     WIDTH = w;
     HEIGHT = h;
-    client = g;
-    
+    client = g;    
 }
+
 Player::~Player(){
 }
 
-bool Player::update()
-{
+bool Player::update() { //DEVUELVE TRUE SI HA CAMBIADO
         bool moverse = false;
         bool rotate = false;
+
         int Delta_x; int Delta_y;
         int mouse_x, mouse_y;
         float prevRot = rot;
         
+        //ROTACION---------------------------------------------
         SDL_GetMouseState(&mouse_x, &mouse_y);
         Delta_x = pos.x - mouse_x;
         Delta_y = pos.y - mouse_y ;
         
-        rot = (atan2(Delta_y, Delta_x ) * 180.0000)/ 3.14159265;
-        
+        rot = (atan2(Delta_y, Delta_x ) * 180.0000)/ 3.14159265;        
         rot-=90;
 
-        if(prevRot != rot) rotate = true;
+        if(prevRot != rot) rotate = true; //HA ROTADO
 
+        // PULSACION TECLA
         if (ihs->keyDownEvent()){
-            // MOVIMIENTO------------------------------------------------------
-            std::pair<int,int> currentPos = GetPosition();
-            
+            std::pair<int,int> currentPos = GetPosition();           
 
             Vector2D velocity{0,0};
 
+            //MOVIMIENTO--------------------------------------------
             if(ihs->isKeyDown(SDLK_d) ){
                 moverse = true;
                 velocity = Vector2D(speed,0);
@@ -69,11 +70,10 @@ bool Player::update()
 
             // DISPARAR----------------------------------------------------------
             if(ihs->isKeyDown(SDLK_SPACE)){
-                client->crearBala(currentPos, rot);
-            
-
+                client->crearBala(currentPos, rot);     
             }
     }
-        return moverse || rotate;
+
+    return moverse || rotate;
 }  
 

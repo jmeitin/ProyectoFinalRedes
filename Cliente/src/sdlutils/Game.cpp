@@ -1,57 +1,46 @@
 #include "Game.h"
 #include "../utils/Collisions.h"
 
-Client::Client(const char* ip, const char* port, const char * n): socket(ip,port){
-	
-	nick = n;
-
-//	std::cout << nick<<std::endl;
-
-	
+Client::Client(const char* ip, const char* port, const char * n): socket(ip,port){	
+	nick = n;	
 }
 
 Client::~Client(){
-	if(player != nullptr)delete player;
-	if(player2 != nullptr)delete player2;
-	freeDeadBullets();
+	if(player != nullptr) delete player;
+	if(player2 != nullptr) delete player2;
+	freeDeadBullets(); 
 	while (!MyBullets.empty()) {
-       	 	delete MyBullets.back();
-       		MyBullets.pop_back();
+		delete MyBullets.back();
+		MyBullets.pop_back();
    	} 
-	   while (!EnemyBullets.empty()) {
-       	 	delete EnemyBullets.back();
-       		EnemyBullets.pop_back();
-   	} 
-	
+	while (!EnemyBullets.empty()) {
+		delete EnemyBullets.back();
+		EnemyBullets.pop_back();
+   	} 	
 }
 
-
-void Client::login()
-{
-	
+void Client::login() {	
     LogMessage em(nick);
     em.type = Message::MessageType::LOGIN;
 	
     socket.send(em, socket);
 }
 
-void Client::logout()
-{
+void Client::logout() {
     LogMessage em(nick);
     em.type = Message::MessageType::LOGOUT;
 
     socket.send(em, socket);
 }
 
-void Client::net_thread()
-{
-    while(true)
-    {
+void Client::net_thread() {
+    while(true) {
         //Recibir Mensajes de red
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
         Message message;
 		char buffer[Message::MESSAGE_SIZE];
         socket.recv(message,buffer);
+
 		if(!playing && message.type == Message::MessageType::CONFIRMATION){
 		
 			PlayerMsg playerm1; playerm1.from_bin(buffer);
@@ -64,22 +53,21 @@ void Client::net_thread()
 			playing = true;			
 			continue;
 		}
+
 		if(playing){
 			if (message.type == Message::MessageType::PLAYERPOS){
 				Object playerm2; playerm2.from_bin(buffer);
-				//std::cout << playerm2.posx <<" " << playerm2.posy << " " << playerm2.rot << "\n";
-				//playerm2.type = Message::MessageType::PLAYERPOS;
 				player2->move(playerm2.posx, playerm2.posy, playerm2.rot);
 			}
 			else if (message.type == Message::MessageType::SHOT){
 				PlayerMsg bullet; bullet.from_bin(buffer);
 				pair <int,int> aux{player2->GetPosition().first, player2->GetPosition().second};
+				//INSTANCIA BALA ==> EnemyBullets
 				crearBalaEnemiga(aux, player2->getRot());
 			}
 			else if (message.type == Message::MessageType::PlAYERKILLED){
 				PlayerMsg player; player.from_bin(buffer);
 				playing = false;
-				//delete player2;
 			}
 			else if(message.type == Message::MessageType::LOGOUT){
 				playing = false;
@@ -105,76 +93,94 @@ void Client::startGame(){
 		std::cerr << "Caught and exception of unknown type ...";
 	}
 	
-     sdl = SDLUtils::instance();
-	// std::cout << (sdl == nullptr) << std::endl;
-    // //show the cursor
-	 sdl->showCursor();
+    sdl = SDLUtils::instance();
 
-	// // store the 'renderer' in a local variable, just for convenience
-	 renderer = sdl->renderer();
+    // show the cursor
+	sdl->showCursor();
 
-	// we can take textures from the predefined ones, and we can create a custom one as well
+	// store the 'renderer' in a local variable, just for convenience
+	renderer = sdl->renderer();
+
+	// crear jugadores
 	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID].first,posiciones[MyPlayerID].second, SPEED, WIDTH, HEIGHT);
-	 int otherID = (MyPlayerID + 1) % 2	;
+	int otherID = (MyPlayerID + 1) % 2	;
 	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID].first,posiciones[otherID].second, SPEED, WIDTH, HEIGHT);
-	  ih = InputHandler::instance();
-
-    
+	
+	ih = InputHandler::instance();    
 }
 
 void Client::game_thread(){
+	//BUCLE DE JUEGO
     while (!exit_) {
-			if(ih != nullptr){
-				if (ih->keyDownEvent() )
-				{
+		if(ih != nullptr){
+			//SALIR DEL JUEGO
+			if (ih->keyDownEvent() ) {
 				if(ih->isKeyDown(SDLK_q)){
 					logout();
 					exit_ = true;
-					}
 				}
 			}
-		if(playing){
-		
-		//Uint32 startTime = sdl->currRealTime();
-		
-		// // update the event handler
-		ih->refresh();
-			// clear screen
-		sdl->clearRenderer();
-
-
-		//player->update();
-		if(player->update()){
-			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
-			//std::cout << player->GetPosition().first <<" " << player->GetPosition().second << " " << player->getRot() << "\n";
-			posMsg.type = Message::MessageType::PLAYERPOS;
-			socket.send(posMsg, socket);
-
 		}
+		//JUGANDO
+		if(playing){		
+			//Uint32 startTime = sdl->currRealTime();
+			
+			// update the event handler
+			ih->refresh();
+			// clear screen
+			sdl->clearRenderer();
 
-	checkCollision();
+			//ACTUALIZAR LA POSICION/ROT DE MI JUGADOR
+			if(player->update()){
+				Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
+				posMsg.type = Message::MessageType::PLAYERPOS;
+				socket.send(posMsg, socket);
+			}
+
+			// EnemyDeadBullets x player
+			checkCollision();
 		
-	 updateAllBullets();
-	// freeDeadBullets();
-	// 	//RENDER---------------------------------------------------
-	 	for(Bala* bullet : MyBullets) bullet->render();
-	 	for(Bala* bullet : EnemyBullets) bullet->render();
+			updateAllBullets();
+			//freeDeadBullets();
 
-	 	player->render();
-	 	player2->render();
-		
-		
-	// 	// present new frame
-	 	sdl->presentRenderer();
+			// RENDER---------------------------------------------------
+			for(Bala* bullet : MyBullets) bullet->render();
+			for(Bala* bullet : EnemyBullets) bullet->render();
 
-		//Uint32 frameTime = sdl->currRealTime() - startTime;
+			player->render();
+			player2->render();			
+			
+			// present new frame
+			sdl->presentRenderer();
 
-		// if (frameTime < 20)
-		// 	SDL_Delay(20 - frameTime);
+			//Uint32 frameTime = sdl->currRealTime() - startTime;
+
+			// if (frameTime < 20)
+			// 	SDL_Delay(20 - frameTime);
 		 }
 	 }
 	// stop the music
 	//Music::haltMusic();
+}
+
+void Client::updateAllBullets(){
+	for (auto bullet =MyBullets.begin(); bullet != MyBullets.end(); bullet++){
+		(*bullet)->update();
+		std::pair<int,int> currentPos = (*bullet)->GetPosition();
+
+		//SI SE SALE DE RANGO ==> ELIMINAR
+		if (currentPos.first >= WIDTH || currentPos.first <= 0||currentPos.second  >= HEIGHT||currentPos.second <= 0)  
+			MyDeadBullets.push_back((*bullet));
+	}
+
+	for (auto bullet =EnemyBullets.begin(); bullet != EnemyBullets.end(); bullet++){
+		(*bullet)->update();
+		std::pair<int,int> currentPos = (*bullet)->GetPosition();
+
+		//SI SE SALE DE RANGO ==> ELIMINAR
+		if (currentPos.first >= WIDTH || currentPos.first <= 0||currentPos.second  >= HEIGHT||currentPos.second <= 0)  //SI SE MUERE
+			EnemyDeadBullets.push_back((*bullet));
+	}	
 }
 
 void Client::freeDeadBullets(){
@@ -189,27 +195,6 @@ void Client::freeDeadBullets(){
 		delete EnemyDeadBullets.back();
 		EnemyDeadBullets.pop_back();
 	}
-
-}
-
-void Client::updateAllBullets(){
-
-	for (auto bullet =MyBullets.begin(); bullet != MyBullets.end(); bullet++){
-		(*bullet)->update();
-		std::pair<int,int> currentPos = (*bullet)->GetPosition();
-
-		if (currentPos.first >= WIDTH || currentPos.first <= 0||currentPos.second  >= HEIGHT||currentPos.second <= 0)  //SI SE MUERE
-			MyDeadBullets.push_back((*bullet));
-	}
-
-	for (auto bullet =EnemyBullets.begin(); bullet != EnemyBullets.end(); bullet++){
-		(*bullet)->update();
-		std::pair<int,int> currentPos = (*bullet)->GetPosition();
-
-		if (currentPos.first >= WIDTH || currentPos.first <= 0||currentPos.second  >= HEIGHT||currentPos.second <= 0)  //SI SE MUERE
-			EnemyDeadBullets.push_back((*bullet));
-	}
-	
 }
 
 void Client::crearBala(pair<int,int> currentPos, float rot){
@@ -219,14 +204,11 @@ void Client::crearBala(pair<int,int> currentPos, float rot){
 	socket.send(shot, socket);
 }
 
-
 void Client::crearBalaEnemiga(pair<int,int> pos, float rot){
-
-    EnemyBullets.push_back(new Bala(&sdl->images().at("fire"), pos.first, pos.second, SPEED, WIDTH, HEIGHT, rot));
-	
+    EnemyBullets.push_back(new Bala(&sdl->images().at("fire"), pos.first, pos.second, SPEED, WIDTH, HEIGHT, rot));	
 }
 
-
+//COLISION BALAS ENEMIGAS x PLAYER
 void Client::checkCollision(){
 	for (auto bullet =EnemyBullets.begin(); bullet != EnemyBullets.end(); bullet++){
         Bala* b = (*bullet);		
@@ -241,11 +223,10 @@ void Client::checkCollision(){
 				socket.send(msg, socket);
 				//mensaje de que he perdido -----------------------------
 				std::cout<< "ganó jugador B";
-			}
+			}			
+	}
 			
-		}
-			
-    }
+}
 	
 
 

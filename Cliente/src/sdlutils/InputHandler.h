@@ -31,7 +31,7 @@ public:
 
 		isMouseButtonUpEvent_ = false;
 		isMouseButtonDownEvent_ = false;
-
+		
 		isMouseMotionEvent_ = false;
 	}
 
