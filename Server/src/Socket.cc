@@ -78,10 +78,6 @@ int Socket::recv(Serializable &obj,char* buffer, Socket * &sock)
     return 0;
 }
 
-
-
-
-
 int Socket::send(Serializable& obj, const Socket& sock)
 {
     //Serializar el objeto

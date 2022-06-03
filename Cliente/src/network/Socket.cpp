@@ -57,9 +57,7 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 int Socket::recv(Serializable &obj,char* buffer, Socket * &sock)
 {
     struct sockaddr sa;
-    socklen_t sa_len = sizeof(struct sockaddr);
-
-    
+    socklen_t sa_len = sizeof(struct sockaddr);    
 
     ssize_t bytes = ::recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sa, &sa_len);
 
@@ -77,10 +75,6 @@ int Socket::recv(Serializable &obj,char* buffer, Socket * &sock)
 
     return 0;
 }
-
-
-
-
 
 int Socket::send(Serializable& obj, const Socket& sock)
 {

@@ -31,11 +31,9 @@ public:
     Message(){};
 
     virtual void to_bin() ;
-
     virtual int from_bin(char * bobj);
 
-    uint8_t type;
-    
+    uint8_t type;    
 };
 
 class LogMessage: public Message{
@@ -55,18 +53,17 @@ public:
 class Object: public Message{
 public:
     Object(){};
-    Object(const host_t& p, const int& px, const int& py, const float& r): player((host_t)p),
-                                                                                posx(px), 
-                                                                                posy(py),
-                                                                                rot(r){};
+    Object(const host_t& p, const int& px, const int& py, const float& r): 
+        player((host_t)p), posx(px), posy(py), rot(r){
+
+    };
 
     void to_bin() override;
     int from_bin(char * bobj) override;
     
     host_t player ;
     int posx, posy;
-    float rot;
-    
+    float rot;    
 };
 
 class PlayerMsg: public Message{
