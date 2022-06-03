@@ -17,99 +17,94 @@ void Message::to_bin(){
 
 int Message::from_bin(char * bobj){
 
-    alloc_data(MESSAGE_SIZE);
+   alloc_data(MESSAGE_SIZE);
 
-    memcpy(static_cast<void *>(_data), bobj, MESSAGE_SIZE);
+   memcpy(static_cast<void *>(_data), bobj, MESSAGE_SIZE);
 
-    char* bin = _data;
+   char* bin = _data;
 
-    memcpy(&type, bin, sizeof(uint8_t));
-    bin += sizeof(uint8_t);
+   memcpy(&type, bin, sizeof(uint8_t));
+   bin += sizeof(uint8_t);
 }
 
+void LogMessage::to_bin() {
+   Message::to_bin();
 
+   char* bin = _data + 1 ;
 
- void LogMessage::to_bin() {
-     Message::to_bin();
+   memcpy(bin, nick.c_str(), 8*sizeof(char));
+   bin += 8;  
+}
 
-    char* bin = _data + 1 ;
+int LogMessage::from_bin(char * bobj) {
+   Message::from_bin(bobj);
 
-    memcpy(bin, nick.c_str(), 8*sizeof(char));
-    bin += 8;  
- }
- int LogMessage::from_bin(char * bobj) {
-     Message::from_bin(bobj);
+   char* bin = _data + 1;
 
-     char* bin = _data + 1;
+   char nickAux [8];
 
-    char nickAux [8];
+   memcpy(&nickAux, bin, sizeof(char)*8);
+   bin += sizeof(char)*8;
+   nick = nickAux;
 
-    memcpy(&nickAux, bin, sizeof(char)*8);
-    bin += sizeof(char)*8;
-    nick = nickAux;
-  
-    return 0;
- }
+   return 0;
+}
 
- void Object::to_bin() {
-    Message::to_bin();
+void Object::to_bin() {
+   Message::to_bin();
 
-    char* bin = _data + 1 ;
+   char* bin = _data + 1 ;
 
-    memcpy(bin, &player, sizeof(host_t));
-    bin += sizeof(host_t);  
+   memcpy(bin, &player, sizeof(host_t));
+   bin += sizeof(host_t);  
 
-     memcpy(bin, &posx, sizeof(int));
-    bin += sizeof(int);  
+   memcpy(bin, &posx, sizeof(int));
+   bin += sizeof(int);  
 
-     memcpy(bin, &posy, sizeof(int));
-    bin += sizeof(int);  
+   memcpy(bin, &posy, sizeof(int));
+   bin += sizeof(int);  
 
-    memcpy(bin, &rot, sizeof(float));
-    bin += sizeof(float);  
- }
- int Object::from_bin(char * bobj) {
-    Message::from_bin(bobj);
+   memcpy(bin, &rot, sizeof(float));
+   bin += sizeof(float);  
+}
 
-     char* bin = _data +1 ;
+int Object::from_bin(char * bobj) {
+   Message::from_bin(bobj);
 
-   
+   char* bin = _data +1 ;
 
-     memcpy(&player, bin, sizeof(host_t));
-    bin += sizeof(host_t);  
+   memcpy(&player, bin, sizeof(host_t));
+   bin += sizeof(host_t);  
 
-     memcpy( &posx, bin,sizeof(int));
-    bin += sizeof(int);  
+   memcpy( &posx, bin,sizeof(int));
+   bin += sizeof(int);  
 
-     memcpy(&posy, bin,sizeof(int));
-    bin += sizeof(int);  
+   memcpy(&posy, bin,sizeof(int));
+   bin += sizeof(int);  
 
-    memcpy(&rot, bin, sizeof(float));
-    bin += sizeof(float);  
-    
-    
-  
-    return 0;
- }
+   memcpy(&rot, bin, sizeof(float));
+   bin += sizeof(float);  
 
+   return 0;
+}
 
 void PlayerMsg::to_bin() {
-    Message::to_bin();
+   Message::to_bin();
 
-    char* bin = _data + 1 ;
+   char* bin = _data + 1 ;
 
-    memcpy(bin, &player, 1);
-    bin += sizeof(host_t);  
- }
- int PlayerMsg::from_bin(char * bobj) {
-      Message::from_bin(bobj);
+   memcpy(bin, &player, 1);
+   bin += sizeof(host_t);  
+}
 
-    char* bin = _data +1;
+int PlayerMsg::from_bin(char * bobj) {
+   Message::from_bin(bobj);
 
-    memcpy(&player, bin, sizeof(char)*8);
-    bin += sizeof(host_t);
-  
-  
-    return 0;
- }
+   char* bin = _data +1;
+
+   memcpy(&player, bin, sizeof(char)*8);
+   bin += sizeof(host_t);
+
+   return 0;
+}
 

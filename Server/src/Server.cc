@@ -39,11 +39,9 @@ void Server::net_thread()
                 socket.send(idMsg, (*clients[i].get()));               
             }
             std::cout <<  " confirmaciones\n";  
-            }    
-            //if(++numPlayers==2) playing = true;
-               
-                         
+            }            
         }
+        
         else if (message.type == Message::MessageType::LOGOUT) { 
             LogMessage log ; log.from_bin(buffer);          
             auto it = clients.begin();            
@@ -52,16 +50,6 @@ void Server::net_thread()
             --numPlayers; playing = false;
             std::cout << log.nick << " logged out\n";
         }
-     
-        // else if (message.type == Message::MessageType::PLAYERPOS
-        //         || message.type == Message::MessageType::SHOT
-        //         || message.type == Message::MessageType::PlAYERKILLED)
-        //         {           
-        //     for (int i = 0; i < clients.size(); ++i) {
-        //         if (!(*(clients[i].get()) == *clientSd))
-        //             socket.send(message, (*clients[i].get()));
-        //     }            
-        // }
 
         else if (message.type == Message::MessageType::PLAYERPOS){           
             Object playerPos; playerPos.from_bin(buffer);
@@ -75,30 +63,6 @@ void Server::net_thread()
             int otherID = (shot.player + 1) % 2;
             std::cout << otherID << "\n";
             socket.send(shot, *clients[otherID].get());
-        }   
-
-        //  else if (message.type == Message::MessageType::PlAYERKILLED){
-        //     PlayerMsg pK; pK.from_bin(buffer);
-        //     int otherID = (pK.player + 1) % 2;
-
-        //     socket.send(pK, *clients[otherID].get());
-        // }
-
-        // else if (message.type == Message::MessageType::SHOT){
-        //     PlayerMsg player; player.from_bin(buffer);
-        // }
-        // else if (message.type == Message::MessageType::PlAYERKILLED){
-        //     PlayerMsg player; player.from_bin(buffer);
-        // }
-           // else if (message.type == Message::MessageType::MESSAGE) {            
-        //     for (int i = 0; i < clients.size(); ++i) {
-        //         if (!(*(clients[i].second.get()) == *clientSd))
-        //             socket.send(message, (*clients[i].second.get()));
-        //     }
-        //     std::cout << message.nick << " sent a message\n";
-        // }
-   
+        }      
     }
-
-
 }

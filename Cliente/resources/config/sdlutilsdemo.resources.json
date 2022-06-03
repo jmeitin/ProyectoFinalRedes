@@ -4,7 +4,8 @@
   "images" : [
   
     { "id" : "fire", "file" : "../resources/images/fire.png" },
-    { "id" : "fighter", "file" : "../resources/images/fighter.png" }
+    { "id" : "fighter", "file" : "../resources/images/fighter.png" },
+    { "id" : "background", "file" : "../resources/images/background.jpg" }
   ],
  
   "sounds" : [
