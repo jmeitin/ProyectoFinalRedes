@@ -22,6 +22,7 @@ Client::~Client(){
        	 	delete EnemyBullets.back();
        		EnemyBullets.pop_back();
    	} 
+	
 }
 
 
@@ -37,7 +38,7 @@ void Client::login()
 void Client::logout()
 {
     LogMessage em(nick);
-    em.type = LogMessage::LOGOUT;
+    em.type = Message::MessageType::LOGOUT;
 
     socket.send(em, socket);
 }
@@ -107,10 +108,10 @@ void Client::startGame(){
 	// // store the 'renderer' in a local variable, just for convenience
 	 renderer = sdl->renderer();
 
-	// // we can take textures from the predefined ones, and we can create a custom one as well
-	// // player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID].first,posiciones[MyPlayerID].second, SPEED, WIDTH, HEIGHT);
-	// // int otherID = (MyPlayerID + 1) % 2	;
-	// // player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID].first,posiciones[otherID].second, SPEED, WIDTH, HEIGHT);
+	// we can take textures from the predefined ones, and we can create a custom one as well
+	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID].first,posiciones[MyPlayerID].second, SPEED, WIDTH, HEIGHT);
+	 int otherID = (MyPlayerID + 1) % 2	;
+	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID].first,posiciones[otherID].second, SPEED, WIDTH, HEIGHT);
 	  ih = InputHandler::instance();
 
     
@@ -120,7 +121,7 @@ void Client::game_thread(){
     while (!exit_) {
 		if(playing){
 			
-		// Uint32 startTime = sdl->currRealTime();
+		Uint32 startTime = sdl->currRealTime();
 		
 		// // update the event handler
 		ih->refresh();
@@ -128,18 +129,21 @@ void Client::game_thread(){
 		sdl->clearRenderer();
 
 		// exit when any key is down
-		// if (ih->keyDownEvent() )
-		// {
-		// 	if(ih->isKeyDown(SDLK_q))
-		// 	exit_ = true;
-		// }
+		if (ih->keyDownEvent() )
+		{
+			if(ih->isKeyDown(SDLK_q)){
+				logout();
+				exit_ = true;
+			}
+		}
 
 		
-	// 	if(player->update()){
-	// 		Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
-	// 		socket.send(posMsg, socket);
+		if(player->update()){
+			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
+			posMsg.type = Message::MessageType::PLAYERPOS;
+			socket.send(posMsg, socket);
 
-	// 	}
+		}
 
 	// 	checkCollision();
 		
@@ -149,17 +153,17 @@ void Client::game_thread(){
 	// 	for(Bala* bullet : MyBullets) bullet->render();
 	// 	for(Bala* bullet : EnemyBullets) bullet->render();
 
-	// 	player->render();
-	// 	player2->render();
+	 	player->render();
+	 	player2->render();
 		
 		
 	// 	// present new frame
-	// 	sdl->presentRenderer();
+	 	sdl->presentRenderer();
 
-	// 	Uint32 frameTime = sdl->currRealTime() - startTime;
+		Uint32 frameTime = sdl->currRealTime() - startTime;
 
-	// 	if (frameTime < 20)
-	// 		SDL_Delay(20 - frameTime);
+		if (frameTime < 20)
+			SDL_Delay(20 - frameTime);
 		 }
 	 }
 	// stop the music
@@ -201,7 +205,7 @@ void Client::updateAllBullets(){
 	
 }
 
-void Client::crearBala(pair<int,int> currentPos, double rot){
+void Client::crearBala(pair<int,int> currentPos, float rot){
     MyBullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot));	
 	PlayerMsg shot = PlayerMsg(MyPlayerID);
 	shot.type = Message::MessageType::SHOT;
@@ -209,7 +213,7 @@ void Client::crearBala(pair<int,int> currentPos, double rot){
 }
 
 
-void Client::crearBalaEnemiga(pair<int,int> pos, double rot){
+void Client::crearBalaEnemiga(pair<int,int> pos, float rot){
 
     EnemyBullets.push_back(new Bala(&sdl->images().at("fire"), pos.first, pos.second, SPEED, WIDTH, HEIGHT, rot));
 	

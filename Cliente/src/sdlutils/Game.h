@@ -18,7 +18,7 @@
 using namespace std;
 const int WIDTH = 800;
 const int HEIGHT = 600;
-const int SPEED = 30;
+const int SPEED = 10;
 
 //enum host_t { p1 = 0, p2 = 1};  
 

@@ -17,28 +17,30 @@ void Server::net_thread()
         // - LOGOUT: Eliminar del vector clients
         // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
 
-
+       
         Socket* clientSd;
         char buffer[Message::MESSAGE_SIZE];
         Message message;
         socket.recv(message,buffer, clientSd);
        
-        if (numPlayers < MAX_PLAYERS-1 && message.type == Message::MessageType::LOGIN) {
+        if (numPlayers < MAX_PLAYERS && message.type == Message::MessageType::LOGIN) {
             LogMessage log ; log.from_bin(buffer);
             std::unique_ptr<Socket> uPtr(clientSd);
-            PlayerMsg idMsg(numPlayers++);
-            idMsg.type = Message::MessageType::CONFIRMATION;
+            numPlayers+= 1;
             //cliente aux = cliente((host_t)numPlayers,std::move(uPtr));
             clients.push_back(std::move(uPtr));
-            socket.send(idMsg, *clients.back().get());
-           // for (int i = 0; i < clients.size(); ++i) {
-           //     if ((*(clients[i].get()) == *clientSd)){
-            //    std::cout << "ahuevo";
-           //         socket.send(idMsg, (*clients[i].get()));
-           //     }
-            //}    
+            std::cout << log.nick << " logged in\n" << "player: "<< numPlayers<< "\n";  
+            if(numPlayers == 2){
+           for (int i = 0; i < clients.size(); ++i) {   
+                PlayerMsg idMsg(i);
+                idMsg.type = Message::MessageType::CONFIRMATION;            
+                socket.send(idMsg, (*clients[i].get()));               
+            }
+            std::cout <<  " confirmaciones\n";  
+            }    
             //if(++numPlayers==2) playing = true;
-            std::cout << log.nick << " logged in\n";            
+               
+                         
         }
         else if (message.type == Message::MessageType::LOGOUT) { 
             LogMessage log ; log.from_bin(buffer);          

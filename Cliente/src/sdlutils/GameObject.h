@@ -16,7 +16,7 @@ public:
     void render();  
     void move(Vector2D);  
     void move(int x,int y);
-    void move(int px , int py, double r);
+    void move(int px , int py, float r);
     bool isDestroyable(){return destructible;};
     void setDestroyable(bool d){destructible = d;};
 
@@ -27,7 +27,7 @@ public:
 protected:
     Texture* texture;
     position pos;
-    double rot;
+    float rot;
     bool destructible = false;
 };
 
