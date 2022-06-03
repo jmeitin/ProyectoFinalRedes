@@ -39,6 +39,8 @@ void Client::logout()
     em.type = Message::MessageType::LOGOUT;
 
     socket.send(em, socket);
+
+	exit_ = true;
 }
 
 void Client::net_thread()
@@ -74,15 +76,11 @@ void Client::net_thread()
 				pair <int,int> aux{player2->GetPosition().first, player2->GetPosition().second};
 				crearBalaEnemiga(aux, player2->getRot());
 			}
-			else if (message.type == Message::MessageType::PlAYERKILLED){
-				PlayerMsg player; player.from_bin(buffer);
-				playing = false;
-				//delete player2;
+			else if (message.type == Message::MessageType::PlAYERKILLED){				
+				logout();
+				
 			}
-			else if(message.type == Message::MessageType::LOGOUT){
-				playing = false;
-				break;
-			}
+			
 		}
     }
 }
@@ -155,11 +153,12 @@ void Client::game_thread(){
 	checkCollision();
 		
 	 updateAllBullets();
+	 
 	
 	// 	//RENDER---------------------------------------------------
 	 	for(Bala* bullet : MyBullets) bullet->render();
 	 	for(Bala* bullet : EnemyBullets) bullet->render();
-
+	freeDeadBullets();
 	 	player->render();
 	 	player2->render();
 		
@@ -235,6 +234,8 @@ void Client::checkCollision(){
 				PlayerMsg msg = PlayerMsg(MyPlayerID);
 				msg.type = Message::MessageType::PlAYERKILLED;
 				socket.send(msg, socket);
+				logout();
+				
 				//mensaje de que he perdido -----------------------------
 				std::cout<< "ganó jugador B";
 			}
