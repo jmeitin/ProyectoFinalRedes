@@ -6,7 +6,7 @@
 //#include "InputHandler.h"
 class Bala : public GameObject{
 public:
-    Bala(Texture*, int x, int y, int s, int w, int h, double r = 0);
+    Bala(Texture*, int x, int y, int s, int w, int h, float r = 0);
     virtual ~Bala(){};
     void update();
     

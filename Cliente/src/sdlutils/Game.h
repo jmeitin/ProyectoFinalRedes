@@ -18,7 +18,7 @@
 using namespace std;
 const int WIDTH = 800;
 const int HEIGHT = 600;
-const int SPEED = 30;
+const int SPEED = 10;
 
 //enum host_t { p1 = 0, p2 = 1};  
 
@@ -34,8 +34,8 @@ public:
     void logout();
     void net_thread();
     void game_thread();
-    void crearBala(pair<int,int> pos,double rot);
-    void crearBalaEnemiga(pair<int,int> pos, double rot);
+    void crearBala(pair<int,int> pos,float rot);
+    void crearBalaEnemiga(pair<int,int> pos, float rot);
     
 private:  
     void checkCollision();
@@ -45,7 +45,7 @@ private:
 protected:
 
     Socket socket;
-    Message::host_t MyPlayerID = Message::host_t::p1;
+    Message::host_t MyPlayerID ;
     std::string nick ="";
     bool playing = false;
 

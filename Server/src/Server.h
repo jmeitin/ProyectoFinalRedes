@@ -25,6 +25,7 @@ public:
     Server(const char * s, const char * p): socket(s, p)
     {
         socket.bind();
+        numPlayers =0;
     };
 
     /**

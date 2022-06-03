@@ -18,7 +18,7 @@ bool Player::update()
         bool rotate = false;
         int Delta_x; int Delta_y;
         int mouse_x, mouse_y;
-        double prevRot = rot;
+        float prevRot = rot;
         
         SDL_GetMouseState(&mouse_x, &mouse_y);
         Delta_x = pos.x - mouse_x;

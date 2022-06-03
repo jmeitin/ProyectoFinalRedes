@@ -2,7 +2,7 @@
 
 #include "GameObject.h"
 
-GameObject::GameObject(Texture* text , int x , int y, double r){
+GameObject::GameObject(Texture* text , int x , int y, float r){
     texture = text;
     pos.x = x;
     pos.y = y;
@@ -21,7 +21,7 @@ Vector2D GameObject::getPosition2(){
 }
 void GameObject::render(){
     SDL_Rect dest = { pos.x, pos.y, texture->width(), texture->height() };
-    texture->render(dest, rot);
+    texture->render(dest, (double)rot);
 }
 void GameObject::move(Vector2D vel){
     pos.x += vel.getX();
@@ -37,7 +37,7 @@ float GameObject::getRot(){
     return rot;
 }
 
-void GameObject::move(int px , int py, double r){
+void GameObject::move(int px , int py, float r){
     pos.x = px;
     pos.y = py;
     rot = r;
