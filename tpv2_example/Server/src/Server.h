@@ -1,3 +1,6 @@
+#ifndef SERVER_H_
+#define SERVER_H_
+
 #include <string>
 #include <unistd.h>
 #include <string.h>
@@ -8,7 +11,7 @@
 #include "Socket.h"
 
 #include "Message.h"
-#define cliente std::pair<host_t,std::unique_ptr<Socket>> 
+
 
 /**
  *  Clase para el servidor de chat
@@ -42,8 +45,10 @@ private:
      */
     Socket socket;
 
-    int numPlayers;
+    int numPlayers= 0;
     const int MAX_PLAYERS = 2;
 
     bool playing = false;
 };
+
+#endif /* SOCKET_H_ */

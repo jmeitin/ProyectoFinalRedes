@@ -26,7 +26,7 @@ bool Player::update()
         
         rot-=90;
 
-        if(prevRot != rot) rotate = true
+        if(prevRot != rot) rotate = true;
 
         if (ihs->keyDownEvent()){
             // MOVIMIENTO------------------------------------------------------

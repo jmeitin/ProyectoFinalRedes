@@ -1,3 +1,6 @@
+#ifndef MESSAGE_H_
+#define MESSAGE_H_
+
 #include <string>
 #include <unistd.h>
 #include <string.h>
@@ -102,3 +105,4 @@ public:
 //     uint8_t posx, posy;
     
 // };
+#endif /* SOCKET_H_ */

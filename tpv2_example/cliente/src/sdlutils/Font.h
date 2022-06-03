@@ -1,8 +1,9 @@
 // This file is part of the course TPV2@UCM - Samir Genaim
 
-#pragma once
+#ifndef FONT_H_
+#define FONT_H_
 
-#include <SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <cassert>
 #include <iostream>
@@ -57,3 +58,5 @@ private:
 	TTF_Font *font_;
 }
 ;
+
+#endif

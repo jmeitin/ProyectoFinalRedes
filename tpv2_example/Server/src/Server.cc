@@ -26,8 +26,16 @@ void Server::net_thread()
         if (numPlayers < MAX_PLAYERS-1 && message.type == Message::MessageType::LOGIN) {
             LogMessage log ; log.from_bin(buffer);
             std::unique_ptr<Socket> uPtr(clientSd);
+            PlayerMsg idMsg(numPlayers);
+            idMsg.type = Message::MessageType::CONFIRMATION;
             //cliente aux = cliente((host_t)numPlayers,std::move(uPtr));
             clients.push_back(std::move(uPtr));
+           // for (int i = 0; i < clients.size(); ++i) {
+           //     if ((*(clients[i].get()) == *clientSd)){
+            //    std::cout << "ahuevo";
+           //         socket.send(idMsg, (*clients[i].get()));
+           //     }
+            //}    
             if(++numPlayers==2) playing = true;
             std::cout << log.nick << " logged in\n";            
         }

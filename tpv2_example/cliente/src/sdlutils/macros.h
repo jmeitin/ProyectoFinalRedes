@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include "../utils/Vector2D.h"
 /*

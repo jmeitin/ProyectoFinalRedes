@@ -1,10 +1,8 @@
 #include "Game.h"
 #include "../utils/Collisions.h"
 
-Client::Client(const char* ip, const char* port, std::string n, int np){
+Client::Client(const char* ip, const char* port, const char * n): socket(ip,port){
 	nick = n;
-	socket = Socket(ip,port);
-	MyPlayerID = (host_t)np;
 }
 
 void Client::login()
@@ -33,8 +31,9 @@ void Client::net_thread()
 		char buffer[Message::MESSAGE_SIZE];
         socket.recv(message,buffer);
 		if(!playing && message.type == Message::MessageType::CONFIRMATION){
+			std::cout << "ahuevo";
 			PlayerMsg player; player.from_bin(buffer);
-			MyPlayerID = message.player;
+			MyPlayerID = player.player;
 			startGame();
 			playing = true;			
 			continue;
@@ -43,12 +42,12 @@ void Client::net_thread()
 			if (message.type == Message::MessageType::PLAYERPOS){
 				Object player; player.from_bin(buffer);
 				player.type = Message::MessageType::PLAYERPOS;
-				player2.move(player.posx, player.posy, player.rot);
+				player2->move(player.posx, player.posy, player.rot);
 			}
 			else if (message.type == Message::MessageType::SHOT){
 				PlayerMsg bullet; bullet.from_bin(buffer);
-				pair <int,int> aux{player2->GetPosition().first, player2->GetPosition().second}
-				crearBalaEnemiga(aux, bullet.rot);
+				pair <int,int> aux{player2->GetPosition().first, player2->GetPosition().second};
+				crearBalaEnemiga(aux, player2->getRot());
 			}
 			else if (message.type == Message::MessageType::PlAYERKILLED){
 				PlayerMsg player; player.from_bin(buffer);
@@ -76,9 +75,9 @@ void Client::startGame(){
 	renderer = sdl->renderer();
 
 	// we can take textures from the predefined ones, and we can create a custom one as well
-	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID],posiciones[MyPlayerID], SPEED, WIDTH, HEIGHT);
+	player = new Player(this, &sdl->images().at("fighter"),posiciones[MyPlayerID].first,posiciones[MyPlayerID].second, SPEED, WIDTH, HEIGHT);
 	int otherID = (MyPlayerID + 1) % 2	;
-	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID],posiciones[otherID], SPEED, WIDTH, HEIGHT);
+	player2 = new Player(this, &sdl->images().at("fighter"),posiciones[otherID].first,posiciones[otherID].second, SPEED, WIDTH, HEIGHT);
 	ih = InputHandler::instance();
 
     
@@ -103,7 +102,7 @@ void Client::game_thread(){
 		sdl->clearRenderer();
 
 		if(player->update()){
-			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player.getRot());
+			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
 			socket.send(posMsg, socket);
 
 		}
@@ -166,7 +165,7 @@ void Client::crearBala(pair<int,int> currentPos, double rot){
     MyBullets.push_back(new Bala(&sdl->images().at("fire"), currentPos.first, currentPos.second, SPEED, WIDTH, HEIGHT, rot));	
 	PlayerMsg shot = PlayerMsg(MyPlayerID);
 	shot.type = Message::MessageType::SHOT;
-	socket();
+	socket.send(shot, socket);
 }
 
 
@@ -197,7 +196,7 @@ void Client::checkCollision(){
 			
     }
 	
-}
+
 
 
 // void ChatClient::input_thread()

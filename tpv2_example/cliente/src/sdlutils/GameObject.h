@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef GOBJ_H_
+#define GOBJ_H_
 
 #include "Texture.h"
 class GameObject {
@@ -28,3 +29,5 @@ protected:
     double rot;
     bool destructible = false;
 };
+
+#endif

@@ -3,7 +3,7 @@
 #pragma once
 
 #include <iostream>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <array>
 
 #include "../utils/Singleton.h"

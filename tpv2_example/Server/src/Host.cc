@@ -1,5 +1,6 @@
-#include "Server.h"
 #include <thread>
+#include "Server.h"
+
 int main(int argc, char **argv)
 {
     if(argc < 3){
@@ -10,7 +11,4 @@ int main(int argc, char **argv)
     es.net_thread();
 
     //std::thread ([&es](){ es.net_thread(); delete &es; }).detach();    
-
-    
-    return 0;
 }

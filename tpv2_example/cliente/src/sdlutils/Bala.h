@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef BULLET_H_
+#define BULLET_H_
 
 #include "GameObject.h"
 //#include "InputHandler.h"
@@ -16,3 +17,5 @@ protected:
     Vector2D velocity;
     
 };
+
+#endif

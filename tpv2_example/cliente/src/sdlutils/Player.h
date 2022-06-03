@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PLAYER_H_
+#define PLAYER_H_
 
 #include "GameObject.h"
 #include "InputHandler.h"
@@ -19,3 +20,5 @@ protected:
    
 
 };
+
+#endif
