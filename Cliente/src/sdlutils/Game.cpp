@@ -5,7 +5,7 @@ Client::Client(const char* ip, const char* port, const char * n): socket(ip,port
 	
 	nick = n;
 
-	std::cout << nick<<std::endl;
+//	std::cout << nick<<std::endl;
 
 	
 }
@@ -55,7 +55,10 @@ void Client::net_thread()
 		if(!playing && message.type == Message::MessageType::CONFIRMATION){
 		
 			PlayerMsg playerm1; playerm1.from_bin(buffer);
+
 			MyPlayerID = playerm1.player;
+			 std::cout <<  MyPlayerID <<" \n"; 
+
 			startGame();
 			
 			playing = true;			
@@ -64,8 +67,9 @@ void Client::net_thread()
 		if(playing){
 			if (message.type == Message::MessageType::PLAYERPOS){
 				Object playerm2; playerm2.from_bin(buffer);
-				
-				//player2->move(playerm2.posx, playerm2.posy, playerm2.rot);
+				//std::cout << playerm2.posx <<" " << playerm2.posy << " " << playerm2.rot << "\n";
+				//playerm2.type = Message::MessageType::PLAYERPOS;
+				player2->move(playerm2.posx, playerm2.posy, playerm2.rot);
 			}
 			else if (message.type == Message::MessageType::SHOT){
 				PlayerMsg bullet; bullet.from_bin(buffer);
@@ -74,7 +78,8 @@ void Client::net_thread()
 			}
 			else if (message.type == Message::MessageType::PlAYERKILLED){
 				PlayerMsg player; player.from_bin(buffer);
-				delete player2;
+				playing = false;
+				//delete player2;
 			}
 			else if(message.type == Message::MessageType::LOGOUT){
 				playing = false;
@@ -119,6 +124,15 @@ void Client::startGame(){
 
 void Client::game_thread(){
     while (!exit_) {
+			if(ih != nullptr){
+				if (ih->keyDownEvent() )
+				{
+				if(ih->isKeyDown(SDLK_q)){
+					logout();
+					exit_ = true;
+					}
+				}
+			}
 		if(playing){
 		
 		//Uint32 startTime = sdl->currRealTime();
@@ -128,30 +142,23 @@ void Client::game_thread(){
 			// clear screen
 		sdl->clearRenderer();
 
-		// exit when any key is down
-		if (ih->keyDownEvent() )
-		{
-			if(ih->isKeyDown(SDLK_q)){
-				logout();
-				exit_ = true;
-			}
+
+		//player->update();
+		if(player->update()){
+			Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
+			//std::cout << player->GetPosition().first <<" " << player->GetPosition().second << " " << player->getRot() << "\n";
+			posMsg.type = Message::MessageType::PLAYERPOS;
+			socket.send(posMsg, socket);
+
 		}
 
-		player->update();
-		// if(player->update()){
-		// 	Object posMsg = Object(MyPlayerID, player->GetPosition().first, player->GetPosition().second, player->getRot());
-		// 	posMsg.type = Message::MessageType::PLAYERPOS;
-		// 	socket.send(posMsg, socket);
-
-		// }
-
-	// 	checkCollision();
+	checkCollision();
 		
-	// updateAllBullets();
+	 updateAllBullets();
 	// freeDeadBullets();
 	// 	//RENDER---------------------------------------------------
-	// 	for(Bala* bullet : MyBullets) bullet->render();
-	// 	for(Bala* bullet : EnemyBullets) bullet->render();
+	 	for(Bala* bullet : MyBullets) bullet->render();
+	 	for(Bala* bullet : EnemyBullets) bullet->render();
 
 	 	player->render();
 	 	player2->render();
@@ -227,7 +234,7 @@ void Client::checkCollision(){
 			b->getPosition2(), b->getW(), b->getH(), b->getRot(),
 			player->getPosition2(), player->getW(), player->getH(), player->getRot())) {
 				MyDeadBullets.push_back((*bullet));
-				exit_ = true;
+				playing = false;
 
 				PlayerMsg msg = PlayerMsg(MyPlayerID);
 				msg.type = Message::MessageType::PlAYERKILLED;

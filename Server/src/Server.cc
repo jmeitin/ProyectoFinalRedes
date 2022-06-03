@@ -31,8 +31,10 @@ void Server::net_thread()
             clients.push_back(std::move(uPtr));
             std::cout << log.nick << " logged in\n" << "player: "<< numPlayers<< "\n";  
             if(numPlayers == 2){
-           for (int i = 0; i < clients.size(); ++i) {   
-                PlayerMsg idMsg(i);
+           for (int i = 0; i < clients.size(); ++i) { 
+                Message::host_t host =  Message::host_t(i); 
+                std::cout <<  host <<" \n";  
+                PlayerMsg idMsg(host);
                 idMsg.type = Message::MessageType::CONFIRMATION;            
                 socket.send(idMsg, (*clients[i].get()));               
             }
@@ -51,15 +53,37 @@ void Server::net_thread()
             std::cout << log.nick << " logged out\n";
         }
      
-        else if (message.type == Message::MessageType::PLAYERPOS
-                || message.type == Message::MessageType::SHOT
-                || message.type == Message::MessageType::PlAYERKILLED)
-                {           
-            for (int i = 0; i < clients.size(); ++i) {
-                if (!(*(clients[i].get()) == *clientSd))
-                    socket.send(message, (*clients[i].get()));
-            }            
+        // else if (message.type == Message::MessageType::PLAYERPOS
+        //         || message.type == Message::MessageType::SHOT
+        //         || message.type == Message::MessageType::PlAYERKILLED)
+        //         {           
+        //     for (int i = 0; i < clients.size(); ++i) {
+        //         if (!(*(clients[i].get()) == *clientSd))
+        //             socket.send(message, (*clients[i].get()));
+        //     }            
+        // }
+
+        else if (message.type == Message::MessageType::PLAYERPOS){           
+            Object playerPos; playerPos.from_bin(buffer);
+            int otherID = (playerPos.player + 1) % 2;
+
+            socket.send(playerPos, *clients[otherID].get());               
         }
+
+        else if (message.type == Message::MessageType::SHOT || message.type == Message::MessageType::PlAYERKILLED){
+            PlayerMsg shot; shot.from_bin(buffer);
+            int otherID = (shot.player + 1) % 2;
+            std::cout << otherID << "\n";
+            socket.send(shot, *clients[otherID].get());
+        }   
+
+        //  else if (message.type == Message::MessageType::PlAYERKILLED){
+        //     PlayerMsg pK; pK.from_bin(buffer);
+        //     int otherID = (pK.player + 1) % 2;
+
+        //     socket.send(pK, *clients[otherID].get());
+        // }
+
         // else if (message.type == Message::MessageType::SHOT){
         //     PlayerMsg player; player.from_bin(buffer);
         // }

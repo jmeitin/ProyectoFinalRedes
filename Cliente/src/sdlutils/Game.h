@@ -45,7 +45,7 @@ private:
 protected:
 
     Socket socket;
-    Message::host_t MyPlayerID = Message::host_t::p1;
+    Message::host_t MyPlayerID ;
     std::string nick ="";
     bool playing = false;
 
